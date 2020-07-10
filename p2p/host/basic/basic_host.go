@@ -579,6 +579,7 @@ func (h *BasicHost) NewStream(ctx context.Context, p peer.ID, pids ...protocol.I
 		_ = s.Reset()
 		return nil, err
 	}
+	dlp2plog.L.Debug("preferredProtocol", zap.Any("pref", pref))
 
 	if pref != "" {
 		s.SetProtocol(pref)
