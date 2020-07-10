@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/libp2p/go-libp2p/dlog/dlp2plog"
+	"go.uber.org/zap"
 	"io"
 	"net"
 	"sync"
@@ -587,6 +589,7 @@ func (h *BasicHost) NewStream(ctx context.Context, p peer.ID, pids ...protocol.I
 		}, nil
 	}
 
+	dlp2plog.L.Debug("NewStream SelectOneOf protocols", zap.Strings("pidStrings", pidStrings))
 	selected, err := msmux.SelectOneOf(pidStrings, s)
 	if err != nil {
 		s.Reset()
