@@ -573,13 +573,14 @@ func (h *BasicHost) NewStream(ctx context.Context, p peer.ID, pids ...protocol.I
 	}
 
 	pidStrings := protocol.ConvertToStrings(pids)
+	dlp2plog.L.Debug("NewStream SelectOneOf protocols1", zap.Any("p", p), zap.Strings("pidStrings", pidStrings))
 
 	pref, err := h.preferredProtocol(p, pidStrings)
 	if err != nil {
 		_ = s.Reset()
 		return nil, err
 	}
-	dlp2plog.L.Debug("preferredProtocol", zap.Any("pref", pref))
+	dlp2plog.L.Debug("preferredProtocol", zap.Any("p", p), zap.Any("pids", pids), zap.Any("pref", pref))
 
 	if pref != "" {
 		s.SetProtocol(pref)
@@ -590,12 +591,12 @@ func (h *BasicHost) NewStream(ctx context.Context, p peer.ID, pids ...protocol.I
 		}, nil
 	}
 
-	dlp2plog.L.Debug("NewStream SelectOneOf protocols", zap.Strings("pidStrings", pidStrings))
 	selected, err := msmux.SelectOneOf(pidStrings, s)
 	if err != nil {
 		s.Reset()
 		return nil, err
 	}
+	dlp2plog.L.Debug("NewStream SelectOneOf protocols2", zap.Any("p", p), zap.Any("selected", selected))
 
 	selpid := protocol.ID(selected)
 	s.SetProtocol(selpid)
